@@ -51,6 +51,13 @@ function normalize(o){
     if (!o.spells.some(function(x){ return x.scroll; })){ var sc=b.spells.filter(function(x){ return x.scroll; })[0], at=o.spells.findIndex(function(x){ return x.name==="Жуткий смех Таши"; }); o.spells.splice(at<0?o.spells.length:at, 0, clone(sc)); }
     if (!(o.items||[]).some(function(x){ return x.name==="Свиток: Волна грома"; })){ o.items.push(clone(b.items.filter(function(x){ return x.name==="Свиток: Волна грома"; })[0])); if (o.coins) o.coins.gp = num(o.coins.gp) - 50; }
   }
+  if ((o.v||1) < 7){ /* v7: варианты для иллюзий */
+    ["Малая иллюзия","Безмолвный образ"].forEach(function(nm){ var src=b.spells.filter(function(x){ return x.name===nm; })[0], dst=o.spells.filter(function(x){ return x.name===nm; })[0]; if (src && dst && !(dst.variants&&dst.variants.length)){ dst.variants=clone(src.variants); dst.vsel=0; } });
+  }
+  if ((o.v||1) < 8){ /* v8: вариант «Дымовая завеса» */
+    var siB=b.spells.filter(function(x){ return x.name==="Безмолвный образ"; })[0], siO=o.spells.filter(function(x){ return x.name==="Безмолвный образ"; })[0];
+    if (siB && siO && siO.variants && !siO.variants.some(function(v){ return v.n==="Дымовая завеса"; })){ var sm=siB.variants.filter(function(v){ return v.n==="Дымовая завеса"; })[0]; if (sm) siO.variants.push(clone(sm)); }
+  }
   o.v = b.v;
   return o;
 }
